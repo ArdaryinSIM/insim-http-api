@@ -1,36 +1,36 @@
-# InSim API - Utilisation directe (HTTP)
+# InSim API - Direct HTTP Usage
 
-Documentation pour utiliser l'API InSim directement via des requêtes HTTP sans installer le module Node.js.
+Documentation for using the InSim API directly via HTTP requests without installing the Node.js module.
 
 ## 📡 Endpoints
 
-- **Envoi de SMS** : `https://www.insim.app/api/v1/sendsms.php`
-- **Ajout de contacts** : `https://www.insim.app/api/v1/contact.php`
-- **Clic-to-Call** : `https://www.insim.app/api/v1/clic.php`
+- **Send SMS** : `https://www.insim.app/api/v1/sendsms.php`
+- **Add Contacts** : `https://www.insim.app/api/v1/contact.php`
+- **Click-to-Call** : `https://www.insim.app/api/v1/clic.php`
 
-## 📱 Envoi de SMS
+## 📱 Send SMS
 
-### Requête curl
+### curl Request
 
 ```bash
 curl -X POST https://www.insim.app/api/v1/sendsms.php \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
-      "login": "votre-email@example.com",
-      "accessKey": "votre-clé-d'\''accès"
+      "login": "your-email@example.com",
+      "accessKey": "your-access-key"
     },
     "messages": [
       {
         "phone_number": "+33612345678",
-        "message": "Bonjour depuis l'\''API InSim [Lien_Tracking]",
+        "message": "Hello from InSim API [Lien_Tracking]",
         "url": "https://example.com/",
         "priorite": 1,
         "date_to_send": "2025-10-29 10:16:10"
       },
       {
         "phone_number": "+33698765432",
-        "message": "Test depuis l'\''API",
+        "message": "Test from API",
         "url": "",
         "priorite": 1,
         "date_to_send": "2025-10-29 10:16:10"
@@ -39,27 +39,27 @@ curl -X POST https://www.insim.app/api/v1/sendsms.php \
   }'
 ```
 
-### Exemple avec un fichier JSON
+### Example with JSON File
 
-Créez un fichier `sendsms.json` :
+Create a file `sendsms.json`:
 
 ```json
 {
   "header": {
-    "login": "votre-email@example.com",
-    "accessKey": "votre-clé-d'accès"
+    "login": "your-email@example.com",
+    "accessKey": "your-access-key"
   },
   "messages": [
     {
       "phone_number": "+33612345678",
-      "message": "Bonjour depuis l'API InSim [Lien_Tracking]",
+      "message": "Hello from InSim API [Lien_Tracking]",
       "url": "https://example.com/",
       "priorite": 1,
       "date_to_send": "2025-10-29 10:16:10"
     },
     {
       "phone_number": "+33698765432",
-      "message": "Test depuis l'API",
+      "message": "Test from API",
       "url": "",
       "priorite": 1,
       "date_to_send": "2025-10-29 10:16:10"
@@ -68,7 +68,7 @@ Créez un fichier `sendsms.json` :
 }
 ```
 
-Puis exécutez :
+Then execute:
 
 ```bash
 curl -X POST https://www.insim.app/api/v1/sendsms.php \
@@ -76,117 +76,117 @@ curl -X POST https://www.insim.app/api/v1/sendsms.php \
   -d @sendsms.json
 ```
 
-### Structure de la requête
+### Request Structure
 
-**Header :**
-- `login` (String) : Email de votre compte InSim
-- `accessKey` (String) : Clé d'accès API
+**Header:**
+- `login` (String): Your InSim account email
+- `accessKey` (String): API access key
 
-**Messages :**
-- `phone_number` (String) : Numéro de téléphone au format international (ex: `+33612345678`)
-- `message` (String) : Contenu du message. Utilisez `[Lien_Tracking]` pour insérer l'URL de tracking
-- `url` (String) : URL optionnelle à inclure dans le message
-- `priorite` (Number) : Priorité du message (1 par défaut)
-- `date_to_send` (String) : Date d'envoi au format `"YYYY-MM-DD HH:mm:ss"` (optionnel)
+**Messages:**
+- `phone_number` (String): Phone number in international format (e.g., `+33612345678`)
+- `message` (String): Message content. Use `[Lien_Tracking]` to insert the tracking URL
+- `url` (String): Optional URL to include in the message
+- `priorite` (Number): Message priority (1 by default)
+- `date_to_send` (String): Send date in format `"YYYY-MM-DD HH:mm:ss"` (optional)
 
-### Réponse
+### Response
 
 ```json
 [
   {
     "id_sms_api": "FI5O7apqaaqcUmQ",
     "sms_per_message": 1,
-    "user": "votre-email@example.com",
+    "user": "your-email@example.com",
     "sent_time": "2025-10-29T10:16:10.541Z",
     "phone_number": "+33612345678",
-    "message": "Bonjour depuis l'API InSim https://arsms.co/oloe00en5QPi \n \nSent for free from PC via arsms.co/free",
+    "message": "Hello from InSim API https://arsms.co/oloe00en5QPi \n \nSent for free from PC via arsms.co/free",
     "sent": 1
   },
   {
     "id_sms_api": "ABC123xyz456",
     "sms_per_message": 1,
-    "user": "votre-email@example.com",
+    "user": "your-email@example.com",
     "sent_time": "2025-10-29T10:16:10.541Z",
     "phone_number": "+33698765432",
-    "message": "Test depuis l'API https://arsms.co/xyz789 \n \nSent for free from PC via arsms.co/free",
+    "message": "Test from API https://arsms.co/xyz789 \n \nSent for free from PC via arsms.co/free",
     "sent": 1
   }
 ]
 ```
 
-**Champs de la réponse :**
-- `id_sms_api` (String) : Identifiant unique du SMS
-- `sms_per_message` (Number) : Nombre de SMS nécessaires pour envoyer le message
-- `user` (String) : Email de l'utilisateur qui a envoyé le SMS
-- `sent_time` (String) : Date et heure d'envoi au format ISO 8601
-- `phone_number` (String) : Numéro de téléphone du destinataire
-- `message` (String) : Contenu du message envoyé (avec URL de tracking si fournie)
-- `sent` (Number) : Statut d'envoi (1 = envoyé, 0 = non envoyé)
+**Response Fields:**
+- `id_sms_api` (String): Unique SMS identifier
+- `sms_per_message` (Number): Number of SMS needed to send the message
+- `user` (String): Email of the user who sent the SMS
+- `sent_time` (String): Send date and time in ISO 8601 format
+- `phone_number` (String): Recipient phone number
+- `message` (String): Sent message content (with tracking URL if provided)
+- `sent` (Number): Send status (1 = sent, 0 = not sent)
 
-## 👥 Ajout de contacts
+## 👥 Add Contacts
 
-### Requête curl
+### curl Request
 
 ```bash
 curl -X POST https://www.insim.app/api/v1/contact.php \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
-      "login": "votre-email@example.com",
-      "accessKey": "votre-clé-d'\''accès"
+      "login": "your-email@example.com",
+      "accessKey": "your-access-key"
     },
     "contacts": [
       {
-        "firstname": "Jean",
-        "lastname": "Dupont",
+        "firstname": "John",
+        "lastname": "Doe",
         "phone_number": "+33612345678",
         "adress": "",
         "email": ""
       },
       {
-        "firstname": "Marie",
-        "lastname": "Martin",
+        "firstname": "Jane",
+        "lastname": "Smith",
         "phone_number": "+33698765432",
-        "adress": "123 Rue de la Paix, Paris",
-        "email": "marie.martin@example.com"
+        "adress": "123 Peace Street, Paris",
+        "email": "jane.smith@example.com"
       }
     ]
   }'
 ```
 
-### Structure de la requête
+### Request Structure
 
-**Header :**
-- `login` (String) : Email de votre compte InSim
-- `accessKey` (String) : Clé d'accès API
+**Header:**
+- `login` (String): Your InSim account email
+- `accessKey` (String): API access key
 
-**Contacts :**
-- `firstname` (String) : Prénom du contact
-- `lastname` (String) : Nom du contact
-- `phone_number` (String) : Numéro de téléphone au format international (ex: `+33612345678`)
-- `adress` (String, optionnel) : Adresse du contact
-- `email` (String, optionnel) : Email du contact
+**Contacts:**
+- `firstname` (String): Contact first name
+- `lastname` (String): Contact last name
+- `phone_number` (String): Phone number in international format (e.g., `+33612345678`)
+- `adress` (String, optional): Contact address
+- `email` (String, optional): Contact email
 
-### Réponse (succès)
+### Response (Success)
 
 ```json
 {
   "data": {
     "contact": [
       {
-        "firstname": "Jean",
-        "lastname": "Dupont",
+        "firstname": "John",
+        "lastname": "Doe",
         "phonenumber": "+33612345678",
         "adress": "",
         "email": "",
         "result": "success"
       },
       {
-        "firstname": "Marie",
-        "lastname": "Martin",
+        "firstname": "Jane",
+        "lastname": "Smith",
         "phonenumber": "+33698765432",
-        "adress": "123 Rue de la Paix, Paris",
-        "email": "marie.martin@example.com",
+        "adress": "123 Peace Street, Paris",
+        "email": "jane.smith@example.com",
         "result": "success"
       }
     ]
@@ -194,15 +194,15 @@ curl -X POST https://www.insim.app/api/v1/contact.php \
 }
 ```
 
-### Réponse (erreur)
+### Response (Error)
 
 ```json
 {
   "data": {
     "contact": [
       {
-        "first_name": "Jean",
-        "last_name": "Dupont",
+        "first_name": "John",
+        "last_name": "Doe",
         "phone_number": "+33INVALID",
         "adress": "",
         "email": "",
@@ -216,38 +216,38 @@ curl -X POST https://www.insim.app/api/v1/contact.php \
 }
 ```
 
-**Codes d'erreur :**
-- `#001` : Invalid phone number
-- `#002` : Empty phone number
-- `#003` : No phone number variable found
-- `#004` : Invalid E-mail (Warning, ne bloque pas la création ou mise à jour du contact)
+**Error Codes:**
+- `#001`: Invalid phone number
+- `#002`: Empty phone number
+- `#003`: No phone number variable found
+- `#004`: Invalid E-mail (Warning, does not block contact creation or update)
 
-## 📞 Clic-to-Call
+## 📞 Click-to-Call
 
-### Requête curl
+### curl Request
 
 ```bash
 curl -X POST https://www.insim.app/api/v1/clic.php \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
-      "login": "votre-email@example.com",
-      "accessKey": "votre-clé-d'\''accès",
+      "login": "your-email@example.com",
+      "accessKey": "your-access-key",
       "type": "clicToCall",
       "phone_number": "+33612345678"
     }
   }'
 ```
 
-### Structure de la requête
+### Request Structure
 
-**Header :**
-- `login` (String) : Email de votre compte InSim
-- `accessKey` (String) : Clé d'accès API
-- `type` (String) : Doit être `"clicToCall"`
-- `phone_number` (String) : Numéro de téléphone à appeler au format international (ex: `+33612345678`)
+**Header:**
+- `login` (String): Your InSim account email
+- `accessKey` (String): API access key
+- `type` (String): Must be `"clicToCall"`
+- `phone_number` (String): Phone number to call in international format (e.g., `+33612345678`)
 
-### Réponse
+### Response
 
 ```json
 [
@@ -259,46 +259,46 @@ curl -X POST https://www.insim.app/api/v1/clic.php \
 ]
 ```
 
-**Champs de la réponse :**
-- `info` (String) : Message informatif
-- `result` (String) : Résultat de l'opération (`"success"` ou `"failed"`)
-- `errors` (Array) : Tableau des codes d'erreur (vide si succès)
+**Response Fields:**
+- `info` (String): Informative message
+- `result` (String): Operation result (`"success"` or `"failed"`)
+- `errors` (Array): Array of error codes (empty if success)
 
-**Codes d'erreur :**
-- `#001` : Our servers are down
-- `#002` : Phone not connected, inSIM not running on the phone
+**Error Codes:**
+- `#001`: Our servers are down
+- `#002`: Phone not connected, inSIM not running on the phone
 
-**Valeurs de résultat :**
-- `"success"` : L'information est arrivée avec succès sur nos serveurs
-- `"failed"` : La requête a échoué
+**Result Values:**
+- `"success"`: Information successfully arrived at our servers
+- `"failed"`: Request failed
 
-## 🔧 Exemples avec d'autres outils
+## 🔧 Examples with Other Tools
 
-### Avec HTTPie
+### With HTTPie
 
 ```bash
 http POST https://www.insim.app/api/v1/sendsms.php \
   Content-Type:application/json \
-  header:='{"login":"votre-email@example.com","accessKey":"votre-clé-d'\''accès"}' \
+  header:='{"login":"your-email@example.com","accessKey":"your-access-key"}' \
   messages:='[{"phone_number":"+33612345678","message":"Test","url":"","priorite":1,"date_to_send":"2025-10-29 10:16:10"}]'
 ```
 
-### Avec Postman
+### With Postman
 
-1. Méthode : `POST`
-2. URL : `https://www.insim.app/api/v1/sendsms.php`
-3. Headers : `Content-Type: application/json`
-4. Body (raw JSON) :
+1. Method: `POST`
+2. URL: `https://www.insim.app/api/v1/sendsms.php`
+3. Headers: `Content-Type: application/json`
+4. Body (raw JSON):
 ```json
 {
   "header": {
-    "login": "votre-email@example.com",
-    "accessKey": "votre-clé-d'accès"
+    "login": "your-email@example.com",
+    "accessKey": "your-access-key"
   },
   "messages": [
     {
       "phone_number": "+33612345678",
-      "message": "Test depuis Postman",
+      "message": "Test from Postman",
       "url": "",
       "priorite": 1,
       "date_to_send": "2025-10-29 10:16:10"
@@ -307,7 +307,7 @@ http POST https://www.insim.app/api/v1/sendsms.php \
 }
 ```
 
-### Avec Python (requests)
+### With Python (requests)
 
 ```python
 import requests
@@ -317,13 +317,13 @@ url = "https://www.insim.app/api/v1/sendsms.php"
 headers = {"Content-Type": "application/json"}
 data = {
     "header": {
-        "login": "votre-email@example.com",
-        "accessKey": "votre-clé-d'accès"
+        "login": "your-email@example.com",
+        "accessKey": "your-access-key"
     },
     "messages": [
         {
             "phone_number": "+33612345678",
-            "message": "Test depuis Python",
+            "message": "Test from Python",
             "url": "",
             "priorite": 1,
             "date_to_send": "2025-10-29 10:16:10"
@@ -335,20 +335,20 @@ response = requests.post(url, headers=headers, json=data)
 print(response.json())
 ```
 
-### Avec PHP
+### With PHP
 
 ```php
 <?php
 $url = "https://www.insim.app/api/v1/sendsms.php";
 $data = [
     "header" => [
-        "login" => "votre-email@example.com",
-        "accessKey" => "votre-clé-d'accès"
+        "login" => "your-email@example.com",
+        "accessKey" => "your-access-key"
     ],
     "messages" => [
         [
             "phone_number" => "+33612345678",
-            "message" => "Test depuis PHP",
+            "message" => "Test from PHP",
             "url" => "",
             "priorite" => 1,
             "date_to_send" => "2025-10-29 10:16:10"
@@ -370,24 +370,24 @@ echo $result;
 ?>
 ```
 
-## 📝 Notes importantes
+## 📝 Important Notes
 
-- Tous les numéros de téléphone doivent être au format international avec le préfixe `+` (ex: `+33612345678` pour la France)
-- Le format de date pour `date_to_send` est : `"YYYY-MM-DD HH:mm:ss"` (ex: `"2025-10-29 10:16:10"`)
-- Le champ `[Lien_Tracking]` dans le message sera remplacé par l'URL de tracking générée automatiquement
-- Assurez-vous que votre clé d'accès API est valide et active
-- En cas d'erreur, vérifiez les codes d'erreur retournés dans la réponse
+- All phone numbers must be in international format with the `+` prefix (e.g., `+33612345678` for France)
+- Date format for `date_to_send` is: `"YYYY-MM-DD HH:mm:ss"` (e.g., `"2025-10-29 10:16:10"`)
+- The `[Lien_Tracking]` field in the message will be replaced by the automatically generated tracking URL
+- Make sure your API access key is valid and active
+- In case of error, check the error codes returned in the response
 
-## 🔗 Liens
+## 🔗 Links
 
-- [Documentation Node.js Module](https://github.com/ArdaryinSIM/insim-api)
+- [Node.js Module Documentation](https://github.com/ArdaryinSIM/insim-api)
 - [InSim Website](https://ardary-insim.com/)
 
-## 📄 Licence
+## 📄 License
 
 MIT
 
-## 👤 Auteur
+## 👤 Author
 
 ArdaryinSIM
 
