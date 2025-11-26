@@ -4,16 +4,16 @@ Documentation for using the InSim API directly via HTTP requests without install
 
 ## 📡 Endpoints
 
-- **Send SMS** : `https://www.insim.app/api/v1/sendsms.php`
-- **Add Contacts** : `https://www.insim.app/api/v1/contact.php`
-- **Click-to-Call** : `https://www.insim.app/api/v1/clic.php`
+- **Send SMS** : `https://www.insim.app/api/v1/sendsms`
+- **Add Contacts** : `https://www.insim.app/api/v1/contact`
+- **Click-to-Call** : `https://www.insim.app/api/v1/clicTocall`
 
 ## 📱 Send SMS
 
 ### curl Request
 
 ```bash
-curl -X POST https://www.insim.app/api/v1/sendsms.php \
+curl -X POST https://www.insim.app/api/v1/sendsms \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
@@ -71,7 +71,7 @@ Create a file `sendsms.json`:
 Then execute:
 
 ```bash
-curl -X POST https://www.insim.app/api/v1/sendsms.php \
+curl -X POST https://www.insim.app/api/v1/sendsms \
   -H "Content-Type: application/json" \
   -d @sendsms.json
 ```
@@ -128,7 +128,7 @@ curl -X POST https://www.insim.app/api/v1/sendsms.php \
 ### curl Request
 
 ```bash
-curl -X POST https://www.insim.app/api/v1/contact.php \
+curl -X POST https://www.insim.app/api/v1/contact \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
@@ -227,7 +227,7 @@ curl -X POST https://www.insim.app/api/v1/contact.php \
 ### curl Request
 
 ```bash
-curl -X POST https://www.insim.app/api/v1/clic.php \
+curl -X POST https://www.insim.app/api/v1/clicTocall \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
@@ -277,7 +277,7 @@ curl -X POST https://www.insim.app/api/v1/clic.php \
 ### With HTTPie
 
 ```bash
-http POST https://www.insim.app/api/v1/sendsms.php \
+http POST https://www.insim.app/api/v1/sendsms \
   Content-Type:application/json \
   header:='{"login":"your-email@example.com","accessKey":"your-access-key"}' \
   messages:='[{"phone_number":"+33612345678","message":"Test","url":"","priorite":1,"date_to_send":"2025-10-29 10:16:10"}]'
@@ -286,7 +286,7 @@ http POST https://www.insim.app/api/v1/sendsms.php \
 ### With Postman
 
 1. Method: `POST`
-2. URL: `https://www.insim.app/api/v1/sendsms.php`
+2. URL: `https://www.insim.app/api/v1/sendsms`
 3. Headers: `Content-Type: application/json`
 4. Body (raw JSON):
 ```json
@@ -313,7 +313,7 @@ http POST https://www.insim.app/api/v1/sendsms.php \
 import requests
 import json
 
-url = "https://www.insim.app/api/v1/sendsms.php"
+url = "https://www.insim.app/api/v1/sendsms"
 headers = {"Content-Type": "application/json"}
 data = {
     "header": {
@@ -339,7 +339,7 @@ print(response.json())
 
 ```php
 <?php
-$url = "https://www.insim.app/api/v1/sendsms.php";
+$url = "https://www.insim.app/api/v1/sendsms";
 $data = [
     "header" => [
         "login" => "your-email@example.com",
