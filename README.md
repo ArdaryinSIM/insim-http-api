@@ -357,12 +357,12 @@ inSIM sends real-time webhooks to your configured callback URLs.
 
 ---
 
-### D. Click Tracking — `clicked link`
+### D. Click Tracking — `clicked_link`
 
 ```json
 {
   "id_sms_api": "FI5O7apqaaqcUmQ",
-  "title": "clicked link",
+  "clicked_link": "clicked_link",
   "phone_number": "+33612345678",
   "link": "https://example.com/confirm",
   "date": "2025-01-15 14:35:00"
@@ -571,7 +571,7 @@ curl -X POST https://www.insim.app/api/v1/sendsms \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
-      "login": "YOUR_EMAIL",
+      "login": "user@email.com",
       "accessKey": "YOUR_ACCESS_KEY"
     },
     "messages": [{
