@@ -2,141 +2,200 @@
   <img src="api-insim1.png" alt="inSIM API - Connect your IT to mobile telephony" width="600">
 </p>
 
-# inSIM API - Direct HTTP Usage
+<h1 align="center">inSIM API</h1>
 
-Documentation for using the inSIM API directly via HTTP requests without installing the Node.js module.
+<p align="center">
+  <strong>Integrate your entire mobile telephony into your IT</strong>
+</p>
 
-## 📡 Endpoints
+<p align="center">
+  <a href="https://www.ardary-insim.com">Website</a> •
+  <a href="https://insim.app">Web App</a> •
+  <a href="https://play.google.com/store/apps/details?id=com.wstechnologies.ardarysolo">Play Store</a> •
+  <a href="#-quick-start">Quick Start</a>
+</p>
 
-- **Send SMS** : `https://www.insim.app/api/v1/sendsms`
-- **Add Contacts** : `https://www.insim.app/api/v1/contact`
-- **Click-to-Call** : `https://www.insim.app/api/v1/clicTocall`
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License MIT">
+  <img src="https://img.shields.io/badge/platform-Android-green.svg" alt="Android">
+  <img src="https://img.shields.io/badge/iOS-Coming%20Soon-lightgrey.svg" alt="iOS Coming Soon">
+</p>
 
-## 📱 Send SMS
+---
 
-### curl Request
+**inSIM** turns your smartphone into a professional communication gateway. Send and receive SMS, manage calls, and sync everything with your CRM/ERP through a simple REST API.
+
+```
+┌─────────────┐      ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+│   Your IT   │ ←──→ │  inSIM API  │ ←──→ │  📱 Mobile  │ ←──→ │  Customers  │
+│  CRM / ERP  │      │  Webhooks   │      │     App     │      │  Prospects  │
+└─────────────┘      └─────────────┘      └─────────────┘      └─────────────┘
+```
+
+---
+
+## 🎯 Why inSIM?
+
+| Problem | inSIM Solution |
+|---------|----------------|
+| Mobile telephony isolated from IT | Your mobile number becomes an integrated channel |
+| No record of SMS exchanges | Everything is synced and logged |
+| Can't qualify calls | Annotations from mobile or webapp → webhook to CRM |
+| No SMS campaign tracking | Click tracking and delivery status built-in |
+
+### ✨ Key Benefits
+
+- **🔄 Bidirectional** — Send AND receive SMS/calls with real-time webhooks
+- **📱 Your Number** — Use your own mobile number, not an anonymous short code
+- **🖥️ Multi-interface** — REST API + Conversational webapp + Mobile app
+- **📊 Built-in Tracking** — Short links, click tracking, delivery reports (DLR)
+- **📝 Call Qualification** — Annotate your calls and sync with your CRM
+
+---
+
+## 💼 Use Cases
+
+- **Transactional Notifications** — Appointment confirmations, delivery updates, reminders
+- **Sales Outreach** — SMS campaigns with click tracking
+- **Customer Support** — SMS conversations from the webapp or your CRM
+- **CRM Integration** — Automatically synced call qualifications
+
+---
+
+## 🚀 Quick Start
+
+Send your first SMS in one request:
 
 ```bash
 curl -X POST https://www.insim.app/api/v1/sendsms \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
-      "login": "your-email@example.com",
+      "login": "user@email.com",
+      "accessKey": "your-access-key"
+    },
+    "messages": [{
+      "phone_number": "+33612345678",
+      "message": "Hello from inSIM API!"
+    }]
+  }'
+```
+
+**Response:**
+```json
+{
+  "id_sms_api": "FI5O7apqaaqcUmQ",
+  "sms_per_message": 1,
+  "phone_number": "+33612345678",
+  "sent": 1
+}
+```
+
+✅ **That's it.** Your SMS is sent from your own mobile number.
+
+---
+
+## 📋 Features
+
+| Feature | API | Webhook | Description |
+|---------|:---:|:-------:|-------------|
+| Send SMS | ✅ | | Single or bulk, scheduled or immediate |
+| Receive SMS | | ✅ | Real-time notification of incoming SMS |
+| Click-to-Call | ✅ | | Trigger a call from your IT system |
+| Delivery Status (DLR) | | ✅ | Know if the SMS was delivered |
+| Click Tracking | | ✅ | Track who clicks your links |
+| Call Events | | ✅ | Incoming, outgoing, missed |
+| Call Qualification | | ✅ | Notes synced from mobile or webapp |
+| Contact Management | ✅ | | Add contacts to your address book |
+
+---
+
+## 📡 API Endpoints
+
+### Base URL
+```
+https://www.insim.app/api/v1
+```
+
+### Authentication
+
+All requests require an authentication header:
+
+```json
+{
+  "header": {
+    "login": "user@email.com",
+    "accessKey": "your-access-key"
+  }
+}
+```
+
+---
+
+### 📤 Send SMS — `POST /sendsms`
+
+```bash
+curl -X POST https://www.insim.app/api/v1/sendsms \
+  -H "Content-Type: application/json" \
+  -d '{
+    "header": {
+      "login": "user@email.com",
       "accessKey": "your-access-key"
     },
     "messages": [
       {
         "phone_number": "+33612345678",
-        "message": "Hello from InSim API [Lien_Tracking]",
-        "url": "https://example.com/",
+        "message": "Hi! Confirm your appointment here: [Lien_Tracking]",
+        "url": "https://example.com/confirm",
         "priorite": 1,
-        "date_to_send": "2025-10-29 10:16:10"
-      },
-      {
-        "phone_number": "+33698765432",
-        "message": "Test from API",
-        "url": "",
-        "priorite": 1,
-        "date_to_send": "2025-10-29 10:16:10"
+        "date_to_send": "2025-10-29 10:00:00"
       }
     ]
   }'
 ```
 
-### Example with JSON File
+#### Message Parameters
 
-Create a file `sendsms.json`:
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `phone_number` | String | ✅ | Phone number in international format (`+33612345678`) |
+| `message` | String | ✅ | SMS content. Use `[Lien_Tracking]` to insert the tracked URL |
+| `url` | String | | URL to track (will replace `[Lien_Tracking]`) |
+| `priorite` | Number | | Priority: 0 (low), 1 (normal), 2 (high) |
+| `date_to_send` | String | | Scheduled send date `"YYYY-MM-DD HH:mm:ss"` |
 
-```json
-{
-  "header": {
-    "login": "your-email@example.com",
-    "accessKey": "your-access-key"
-  },
-  "messages": [
-    {
-      "phone_number": "+33612345678",
-      "message": "Hello from InSim API [Lien_Tracking]",
-      "url": "https://example.com/",
-      "priorite": 1,
-      "date_to_send": "2025-10-29 10:16:10"
-    },
-    {
-      "phone_number": "+33698765432",
-      "message": "Test from API",
-      "url": "",
-      "priorite": 1,
-      "date_to_send": "2025-10-29 10:16:10"
-    }
-  ]
-}
-```
-
-Then execute:
-
-```bash
-curl -X POST https://www.insim.app/api/v1/sendsms \
-  -H "Content-Type: application/json" \
-  -d @sendsms.json
-```
-
-### Request Structure
-
-**Header:**
-- `login` (String): Your InSim account email
-- `accessKey` (String): API access key
-
-**Messages:**
-- `phone_number` (String): Phone number in international format (e.g., `+33612345678`)
-- `message` (String): Message content. Use `[Lien_Tracking]` to insert the tracking URL
-- `url` (String): Optional URL to include in the message
-- `priorite` (Number): Message priority (1 by default)
-- `date_to_send` (String): Send date in format `"YYYY-MM-DD HH:mm:ss"` (optional)
-
-### Response
+#### Response
 
 ```json
 [
   {
     "id_sms_api": "FI5O7apqaaqcUmQ",
     "sms_per_message": 1,
-    "user": "your-email@example.com",
-    "sent_time": "2025-10-29T10:16:10.541Z",
+    "user": "user@email.com",
+    "sent_time": "2025-10-29T10:00:00.000Z",
     "phone_number": "+33612345678",
-    "message": "Hello from InSim API https://arsms.co/oloe00en5QPi \n \nSent for free from PC via arsms.co/free",
-    "sent": 1
-  },
-  {
-    "id_sms_api": "ABC123xyz456",
-    "sms_per_message": 1,
-    "user": "your-email@example.com",
-    "sent_time": "2025-10-29T10:16:10.541Z",
-    "phone_number": "+33698765432",
-    "message": "Test from API https://arsms.co/xyz789 \n \nSent for free from PC via arsms.co/free",
+    "message": "Hi! Confirm your appointment here: https://arsms.co/xyz123",
     "sent": 1
   }
 ]
 ```
 
-**Response Fields:**
-- `id_sms_api` (String): Unique SMS identifier
-- `sms_per_message` (Number): Number of SMS needed to send the message
-- `user` (String): Email of the user who sent the SMS
-- `sent_time` (String): Send date and time in ISO 8601 format
-- `phone_number` (String): Recipient phone number
-- `message` (String): Sent message content (with tracking URL if provided)
-- `sent` (Number): Send status (1 = sent, 0 = not sent)
+| Field | Description |
+|-------|-------------|
+| `id_sms_api` | Unique SMS identifier |
+| `sms_per_message` | Number of SMS required (> 160 chars = multiple SMS) |
+| `sent` | Status: 1 = sent, 0 = failed |
 
-## 👥 Add Contacts
+---
 
-### curl Request
+### 👥 Add Contacts — `POST /contact`
 
 ```bash
 curl -X POST https://www.insim.app/api/v1/contact \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
-      "login": "your-email@example.com",
+      "login": "user@email.com",
       "accessKey": "your-access-key"
     },
     "contacts": [
@@ -144,34 +203,14 @@ curl -X POST https://www.insim.app/api/v1/contact \
         "firstname": "John",
         "lastname": "Doe",
         "phone_number": "+33612345678",
-        "adress": "",
-        "email": ""
-      },
-      {
-        "firstname": "Jane",
-        "lastname": "Smith",
-        "phone_number": "+33698765432",
-        "adress": "123 Peace Street, Paris",
-        "email": "jane.smith@example.com"
+        "email": "john.doe@example.com",
+        "adress": "123 Main Street"
       }
     ]
   }'
 ```
 
-### Request Structure
-
-**Header:**
-- `login` (String): Your InSim account email
-- `accessKey` (String): API access key
-
-**Contacts:**
-- `firstname` (String): Contact first name
-- `lastname` (String): Contact last name
-- `phone_number` (String): Phone number in international format (e.g., `+33612345678`)
-- `adress` (String, optional): Contact address
-- `email` (String, optional): Contact email
-
-### Response (Success)
+#### Response (Success)
 
 ```json
 {
@@ -181,16 +220,6 @@ curl -X POST https://www.insim.app/api/v1/contact \
         "firstname": "John",
         "lastname": "Doe",
         "phonenumber": "+33612345678",
-        "adress": "",
-        "email": "",
-        "result": "success"
-      },
-      {
-        "firstname": "Jane",
-        "lastname": "Smith",
-        "phonenumber": "+33698765432",
-        "adress": "123 Peace Street, Paris",
-        "email": "jane.smith@example.com",
         "result": "success"
       }
     ]
@@ -198,44 +227,27 @@ curl -X POST https://www.insim.app/api/v1/contact \
 }
 ```
 
-### Response (Error)
+#### Error Codes
 
-```json
-{
-  "data": {
-    "contact": [
-      {
-        "first_name": "John",
-        "last_name": "Doe",
-        "phone_number": "+33INVALID",
-        "adress": "",
-        "email": "",
-        "result": "failed",
-        "errors": [
-          "#001"
-        ]
-      }
-    ]
-  }
-}
-```
+| Code | Description |
+|------|-------------|
+| `#001` | Invalid phone number |
+| `#002` | Empty phone number |
+| `#003` | phone_number variable not found |
+| `#004` | Invalid email (warning, doesn't block creation) |
 
-**Error Codes:**
-- `#001`: Invalid phone number
-- `#002`: Empty phone number
-- `#003`: No phone number variable found
-- `#004`: Invalid E-mail (Warning, does not block contact creation or update)
+---
 
-## 📞 Click-to-Call
+### 📞 Click-to-Call — `POST /clicTocall`
 
-### curl Request
+Trigger a call from your mobile phone connected to inSIM.
 
 ```bash
 curl -X POST https://www.insim.app/api/v1/clicTocall \
   -H "Content-Type: application/json" \
   -d '{
     "header": {
-      "login": "your-email@example.com",
+      "login": "user@email.com",
       "accessKey": "your-access-key",
       "type": "clicToCall",
       "phone_number": "+33612345678"
@@ -243,15 +255,7 @@ curl -X POST https://www.insim.app/api/v1/clicTocall \
   }'
 ```
 
-### Request Structure
-
-**Header:**
-- `login` (String): Your InSim account email
-- `accessKey` (String): API access key
-- `type` (String): Must be `"clicToCall"`
-- `phone_number` (String): Phone number to call in international format (e.g., `+33612345678`)
-
-### Response
+#### Response
 
 ```json
 [
@@ -263,601 +267,160 @@ curl -X POST https://www.insim.app/api/v1/clicTocall \
 ]
 ```
 
-**Response Fields:**
-- `info` (String): Informative message
-- `result` (String): Operation result (`"success"` or `"failed"`)
-- `errors` (Array): Array of error codes (empty if success)
+#### Error Codes
 
-**Error Codes:**
-- `#001`: Our servers are down
-- `#002`: Phone not connected, inSIM not running on the phone
+| Code | Description |
+|------|-------------|
+| `#001` | Servers unavailable |
+| `#002` | Phone not connected or inSIM not running |
 
-**Result Values:**
-- `"success"`: Information successfully arrived at our servers
-- `"failed"`: Request failed
+---
 
-## 🔧 Examples with Other Tools
+## 🔔 Webhooks
 
-### With HTTPie
+inSIM sends real-time webhooks to your configured callback URLs.
 
-```bash
-http POST https://www.insim.app/api/v1/sendsms \
-  Content-Type:application/json \
-  header:='{"login":"your-email@example.com","accessKey":"your-access-key"}' \
-  messages:='[{"phone_number":"+33612345678","message":"Test","url":"","priorite":1,"date_to_send":"2025-10-29 10:16:10"}]'
-```
+### Configuration
 
-### With Postman
+- **HTTP Method**: GET
+- **Encoding**: JSON data is encoded via `encodeURIComponent()`
+- **URL Format**: `https://your-callback.com?{param}={encoded_json}`
 
-1. Method: `POST`
-2. URL: `https://www.insim.app/api/v1/sendsms`
-3. Headers: `Content-Type: application/json`
-4. Body (raw JSON):
-```json
-{
-  "header": {
-    "login": "your-email@example.com",
-    "accessKey": "your-access-key"
-  },
-  "messages": [
-    {
-      "phone_number": "+33612345678",
-      "message": "Test from Postman",
-      "url": "",
-      "priorite": 1,
-      "date_to_send": "2025-10-29 10:16:10"
-    }
-  ]
-}
-```
+### Summary Table
 
-### With Python (requests)
+| Event | GET Parameter | Trigger |
+|-------|---------------|---------|
+| SMS Received | `message` | An SMS arrives on your mobile |
+| Call Event | `calls` | Incoming, outgoing, or missed call |
+| Delivery Status | `status` | SMS sent or received by recipient |
+| Link Click | `clics` | Someone clicks your tracked link |
+| Call Qualification | `qualification` | Note added from mobile or webapp |
 
-```python
-import requests
-import json
+---
 
-url = "https://www.insim.app/api/v1/sendsms"
-headers = {"Content-Type": "application/json"}
-data = {
-    "header": {
-        "login": "your-email@example.com",
-        "accessKey": "your-access-key"
-    },
-    "messages": [
-        {
-            "phone_number": "+33612345678",
-            "message": "Test from Python",
-            "url": "",
-            "priorite": 1,
-            "date_to_send": "2025-10-29 10:16:10"
-        }
-    ]
-}
-
-response = requests.post(url, headers=headers, json=data)
-print(response.json())
-```
-
-### With PHP
-
-```php
-<?php
-$url = "https://www.insim.app/api/v1/sendsms";
-$data = [
-    "header" => [
-        "login" => "your-email@example.com",
-        "accessKey" => "your-access-key"
-    ],
-    "messages" => [
-        [
-            "phone_number" => "+33612345678",
-            "message" => "Test from PHP",
-            "url" => "",
-            "priorite" => 1,
-            "date_to_send" => "2025-10-29 10:16:10"
-        ]
-    ]
-];
-
-$options = [
-    'http' => [
-        'header' => "Content-Type: application/json\r\n",
-        'method' => 'POST',
-        'content' => json_encode($data)
-    ]
-];
-
-$context = stream_context_create($options);
-$result = file_get_contents($url, false, $context);
-echo $result;
-?>
-```
-
-## 🔔 Webhooks / Callbacks
-
-The InSim API system sends multiple webhooks to your configured callback URLs to notify you about various events in real-time.
-
-### 🔥 Introduction
-
-- **HTTP Method**: All webhooks are sent using **GET** requests
-- **Data Encoding**: All data is encoded using **encodeURIComponent()** before being sent
-- **Real-time Notifications**: Receive instant notifications about SMS, calls, link clicks, and more
-- **No Installation Required**: You don't need to install any API module to receive webhooks
-
-### How It Works
-
-1. Configure your callback URLs in your InSim account settings
-2. When an event occurs, InSim sends a GET request to your callback URL
-3. The JSON payload is encoded and sent as a query parameter
-4. Your server decodes the parameter and processes the webhook
-
-### A. Incoming SMS - `incoming_sms`
-
-Receive notifications when an SMS is received on your InSim number.
-
-#### Payload JSON
+### A. SMS Received — `incoming_sms`
 
 ```json
 {
   "device_identification": "user@email.com",
   "title": "incoming_sms",
   "from": "+33612345678",
-  "message": "Hello, this is a test message",
-  "date": "2023-12-17T20:15:30.565Z"
+  "message": "Hi, I confirm my appointment",
+  "date": "2025-01-15T14:30:00.000Z"
 }
 ```
 
-#### GET Request Format
-
-```
-https://your-callback-url.com?message={ENCODED_JSON}
-```
-
-#### Encoding Example
-
-```javascript
-request(decodeURIComponent(callback_url) + '?message=' + encodeURIComponent(message));
-```
-
-#### Field Description
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `device_identification` | String | Email address of the InSim account that received the SMS |
-| `title` | String | Always `"incoming_sms"` for incoming SMS events |
-| `from` | String | Phone number of the sender in international format (e.g., `+33612345678`) |
-| `message` | String | Content of the received SMS message |
-| `date` | String | Date and time when the SMS was received (ISO 8601 format) |
+**URL called**: `https://your-callback.com?message={encoded_json}`
 
 ---
 
-### B. Call Events - `incoming_call` / `outgoing_call` / `missed_call`
+### B. Call Events — `incoming_call` / `outgoing_call` / `missed_call`
 
-Receive notifications about incoming, outgoing, or missed calls.
-
-#### Payload JSON
-
-**Outgoing Call:**
-```json
-{
-  "device_identification": "user@email.com",
-  "title": "outgoing_call",
-  "phone_number": "+33612345678",
-  "call_time": "2023-12-17 20:32:51",
-  "duration": "0"
-}
-```
-
-**Incoming Call:**
 ```json
 {
   "device_identification": "user@email.com",
   "title": "incoming_call",
   "phone_number": "+33612345678",
-  "call_time": "2023-12-17 20:32:51",
-  "duration": "15:11:04"
+  "call_time": "2025-01-15 14:30:00",
+  "duration": "00:05:23"
 }
 ```
 
-**Missed Call:**
-```json
-{
-  "device_identification": "user@email.com",
-  "title": "missed_call",
-  "phone_number": "+33612345678",
-  "call_time": "2023-12-17 20:32:51",
-  "duration": "0"
-}
-```
+| `title` Value | Description |
+|---------------|-------------|
+| `incoming_call` | Incoming call received |
+| `outgoing_call` | Outgoing call made |
+| `missed_call` | Missed call (duration = "0") |
 
-#### GET Request Format
-
-```
-https://your-callback-url.com?calls={ENCODED_JSON}
-```
-
-#### Encoding Example
-
-```javascript
-request(decodeURIComponent(call_url) + '?calls=' + encodeURIComponent(message));
-```
-
-#### Field Description
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `device_identification` | String | Email address of the InSim account |
-| `title` | String | Call type: `"incoming_call"`, `"outgoing_call"`, or `"missed_call"` |
-| `phone_number` | String | Phone number in international format (e.g., `+33612345678`) |
-| `call_time` | String | Date and time of the call in format `"YYYY-MM-DD HH:mm:ss"` |
-| `duration` | String | Call duration in format `"HH:mm:ss"` or `"0"` for missed calls |
-
-#### Possible Title Values
-
-- `"incoming_call"`: An incoming call was received
-- `"outgoing_call"`: An outgoing call was made
-- `"missed_call"`: A call was missed
+**URL called**: `https://your-callback.com?calls={encoded_json}`
 
 ---
 
-### C. ShortURL Click Tracking - `clicked link`
-
-Receive notifications when someone clicks on a tracking link included in your SMS.
-
-#### Payload JSON
+### C. Delivery Status (DLR) — `sent` / `received`
 
 ```json
 {
-  "id_sms_api": "Pf7v16XZ38oT02s",
+  "user": "user@email.com",
+  "phone_number": "+33612345678",
+  "status": "received",
+  "date_status": "2025-01-15T14:30:00.000Z",
+  "id_sms_api": "FI5O7apqaaqcUmQ"
+}
+```
+
+| `status` Value | Description |
+|----------------|-------------|
+| `sent` | SMS sent by the system |
+| `received` | SMS received by the recipient |
+
+**URL called**: `https://your-callback.com?status={encoded_json}`
+
+---
+
+### D. Click Tracking — `clicked link`
+
+```json
+{
+  "id_sms_api": "FI5O7apqaaqcUmQ",
   "title": "clicked link",
   "phone_number": "+33612345678",
-  "link": "https://beautifier.io/",
-  "date": "2022-11-12 17:04:13"
+  "link": "https://example.com/confirm",
+  "date": "2025-01-15 14:35:00"
 }
 ```
 
-#### GET Request Format
-
-```
-https://your-callback-url.com?clics={ENCODED_JSON}
-```
-
-#### Encoding Example
-
-```javascript
-request(decodeURIComponent(link_url) + '?clics=' + encodeURIComponent(message));
-```
-
-#### Field Description
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id_sms_api` | String | Unique identifier of the SMS that contained the link |
-| `title` | String | Always `"clicked link"` for link click events |
-| `phone_number` | String | Phone number of the person who clicked the link (international format, e.g., `+33612345678`) |
-| `link` | String | The original URL that was clicked |
-| `date` | String | Date and time when the link was clicked in format `"YYYY-MM-DD HH:mm:ss"` |
+**URL called**: `https://your-callback.com?clics={encoded_json}`
 
 ---
 
-### D. Call Qualification - `call_qualification_from_mobile` / `call_qualification_from_interface`
+### E. Call Qualification
 
-Receive notifications when call qualifications are submitted from mobile app or web interface.
-
-#### Payload JSON
-
-**From Mobile:**
 ```json
 {
   "device_identification": "user@email.com",
   "title": "call_qualification_from_mobile",
   "from": "+33612345678",
-  "date": "2023-12-17 23:57:52",
-  "qualification": "Customer interested in product X"
+  "date": "2025-01-15 14:40:00",
+  "qualification": "Interested customer - callback next week"
 }
 ```
 
-**From Interface:**
-```json
-{
-  "device_identification": "user@email.com",
-  "title": "call_qualification_from_interface",
-  "from": "+33612345678",
-  "date": "2023-12-17 23:57:52",
-  "qualification": "Follow-up required"
-}
-```
+| `title` Value | Source |
+|---------------|--------|
+| `call_qualification_from_mobile` | From the mobile app |
+| `call_qualification_from_interface` | From the webapp |
 
-#### GET Request Format
-
-```
-https://your-callback-url.com?qualification={ENCODED_JSON}
-```
-
-#### Encoding Example
-
-```javascript
-request(decodeURIComponent(qualification_url) + '?qualification=' + encodeURIComponent(message));
-```
-
-#### Field Description
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `device_identification` | String | Email address of the InSim account |
-| `title` | String | Source of qualification: `"call_qualification_from_mobile"` or `"call_qualification_from_interface"` |
-| `from` | String | Phone number in international format (e.g., `+33612345678`) |
-| `date` | String | Date and time when the qualification was submitted in format `"YYYY-MM-DD HH:mm:ss"` |
-| `qualification` | String | The qualification text/notes submitted by the user |
-
-#### Possible Title Values
-
-- `"call_qualification_from_mobile"`: Qualification submitted from the mobile app
-- `"call_qualification_from_interface"`: Qualification submitted from the web interface
+**URL called**: `https://your-callback.com?qualification={encoded_json}`
 
 ---
 
-### E. Message Delivery Status (DLR) - `sent` / `received`
+## 💻 Implementation Examples
 
-Receive notifications about SMS delivery status changes (Delivery Receipt).
-
-#### Payload JSON
-
-```json
-{
-  "user": "SENDER_LOGIN",
-  "phone_number": "+33612345678",
-  "status": "received",
-  "date_status": "2019-08-09T12:50:54.211Z",
-  "id_sms_api": "YOUR_ID_SMS"
-}
-```
-
-#### GET Request Format
-
-```
-https://your-callback-url.com?status={ENCODED_JSON}
-```
-
-#### Encoding Example
-
-```javascript
-request(decodeURIComponent(status_url) + '?status=' + encodeURIComponent(message));
-```
-
-#### Field Description
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `user` | String | Email address of the account that sent the SMS |
-| `phone_number` | String | Recipient phone number in international format (e.g., `+33612345678`) |
-| `status` | String | Delivery status: `"sent"` or `"received"` |
-| `date_status` | String | Date and time of the status change (ISO 8601 format) |
-| `id_sms_api` | String | Unique identifier of the SMS (the one you provided when sending or the one generated by the system) |
-
-#### Possible Status Values
-
-- `"sent"`: SMS has been sent from the system
-- `"received"`: SMS has been received by the recipient's device
-
----
-
-## 📊 Webhook Parameters Summary
-
-| Webhook Event | GET Parameter | Example URL Format |
-|---------------|---------------|-------------------|
-| Incoming SMS | `message` | `?message={json}` |
-| Call Events | `calls` | `?calls={json}` |
-| Link Click Tracking | `clics` | `?clics={json}` |
-| Call Qualification | `qualification` | `?qualification={json}` |
-| Delivery Status (DLR) | `status` | `?status={json}` |
-
----
-
-## 📝 Technical Notes
-
-### HTTP Method
-- All webhooks are sent using **GET** requests
-- No POST requests are used for webhooks
-
-### Data Encoding
-- All JSON payloads are encoded using **encodeURIComponent()** before being sent
-- Your server must decode the parameter using `decodeURIComponent()` or equivalent
-- The callback URL must accept a complete JSON object in a single GET parameter
-
-### URL Structure
-The webhook URL structure follows this pattern:
-```
-https://your-callback-url.com?{PARAMETER}={ENCODED_JSON}
-```
-
-Where:
-- `{PARAMETER}` is one of: `message`, `calls`, `clics`, `qualification`, or `status`
-- `{ENCODED_JSON}` is the JSON payload encoded with `encodeURIComponent()`
-
-### Response Handling
-- Your webhook endpoint should return a `200 OK` status code to acknowledge receipt
-- If the webhook fails (non-200 response), InSim may retry the webhook
-- It's recommended to respond quickly (within 5 seconds) to avoid timeouts
-
-### Security Considerations
-- Always use **HTTPS** for your callback URLs
-- Validate and sanitize incoming data
-- Implement proper error handling
-- Consider implementing webhook signature verification if available
-
----
-
-## 💻 Server-Side Implementation Examples
-
-### PHP Example
-
-```php
-<?php
-// Handle incoming SMS webhook
-if (isset($_GET["message"])) {
-    $message = json_decode($_GET["message"], true);
-    
-    // Process the incoming SMS
-    $from = $message["from"];
-    $text = $message["message"];
-    $date = $message["date"];
-    
-    // Save to database, trigger actions, etc.
-    // ...
-    
-    http_response_code(200);
-    echo "OK";
-}
-
-// Handle call events webhook
-if (isset($_GET["calls"])) {
-    $call = json_decode($_GET["calls"], true);
-    
-    // Process the call event
-    $type = $call["title"]; // incoming_call, outgoing_call, missed_call
-    $phone = $call["phone_number"];
-    $duration = $call["duration"];
-    
-    // Update CRM, log call, etc.
-    // ...
-    
-    http_response_code(200);
-    echo "OK";
-}
-
-// Handle link click webhook
-if (isset($_GET["clics"])) {
-    $click = json_decode($_GET["clics"], true);
-    
-    // Track the click
-    $smsId = $click["id_sms_api"];
-    $phone = $click["phone_number"];
-    $link = $click["link"];
-    
-    // Update analytics, trigger conversions, etc.
-    // ...
-    
-    http_response_code(200);
-    echo "OK";
-}
-
-// Handle delivery status webhook
-if (isset($_GET["status"])) {
-    $status = json_decode($_GET["status"], true);
-    
-    // Update SMS delivery status
-    $smsId = $status["id_sms_api"];
-    $deliveryStatus = $status["status"]; // sent or received
-    
-    // Update database, send notifications, etc.
-    // ...
-    
-    http_response_code(200);
-    echo "OK";
-}
-
-// Handle call qualification webhook
-if (isset($_GET["qualification"])) {
-    $qualification = json_decode($_GET["qualification"], true);
-    
-    // Process qualification
-    $phone = $qualification["from"];
-    $notes = $qualification["qualification"];
-    $source = $qualification["title"];
-    
-    // Update CRM, trigger workflows, etc.
-    // ...
-    
-    http_response_code(200);
-    echo "OK";
-}
-?>
-```
-
-### Node.js (Express) Example
-
-```javascript
-const express = require('express');
-const app = express();
-
-// Handle incoming SMS webhook
-app.get('/webhook', (req, res) => {
-  if (req.query.message) {
-    const message = JSON.parse(decodeURIComponent(req.query.message));
-    
-    console.log('Incoming SMS from:', message.from);
-    console.log('Message:', message.message);
-    
-    // Process the SMS
-    // Save to database, trigger actions, etc.
-    
-    res.status(200).send('OK');
-  }
-  
-  // Handle call events
-  if (req.query.calls) {
-    const call = JSON.parse(decodeURIComponent(req.query.calls));
-    
-    console.log('Call Type:', call.title);
-    console.log('Phone:', call.phone_number);
-    
-    // Process the call event
-    // Update CRM, log call, etc.
-    
-    res.status(200).send('OK');
-  }
-  
-  // Handle link clicks
-  if (req.query.clics) {
-    const click = JSON.parse(decodeURIComponent(req.query.clics));
-    
-    console.log('Link clicked by:', click.phone_number);
-    console.log('Link:', click.link);
-    
-    // Track the click
-    // Update analytics, etc.
-    
-    res.status(200).send('OK');
-  }
-  
-  // Handle delivery status
-  if (req.query.status) {
-    const status = JSON.parse(decodeURIComponent(req.query.status));
-    
-    console.log('SMS Status:', status.status);
-    console.log('SMS ID:', status.id_sms_api);
-    
-    // Update delivery status
-    // Update database, etc.
-    
-    res.status(200).send('OK');
-  }
-  
-  // Handle call qualification
-  if (req.query.qualification) {
-    const qualification = JSON.parse(decodeURIComponent(req.query.qualification));
-    
-    console.log('Qualification:', qualification.qualification);
-    console.log('Source:', qualification.title);
-    
-    // Process qualification
-    // Update CRM, etc.
-    
-    res.status(200).send('OK');
-  }
-});
-
-app.listen(3000, () => {
-  console.log('Webhook server listening on port 3000');
-});
-```
-
-### Python (Flask) Example
+### Python — Send SMS
 
 ```python
-from flask import Flask, request, jsonify
+import requests
+
+response = requests.post(
+    "https://www.insim.app/api/v1/sendsms",
+    json={
+        "header": {
+            "login": "user@email.com",
+            "accessKey": "your-access-key"
+        },
+        "messages": [{
+            "phone_number": "+33612345678",
+            "message": "Test from Python"
+        }]
+    }
+)
+print(response.json())
+```
+
+### Python (Flask) — Receive Webhooks
+
+```python
+from flask import Flask, request
 import json
 from urllib.parse import unquote
 
@@ -865,90 +428,192 @@ app = Flask(__name__)
 
 @app.route('/webhook', methods=['GET'])
 def webhook():
-    # Handle incoming SMS webhook
     if 'message' in request.args:
-        message = json.loads(unquote(request.args.get('message')))
-        
-        print(f"Incoming SMS from: {message['from']}")
-        print(f"Message: {message['message']}")
-        
-        # Process the SMS
-        # Save to database, trigger actions, etc.
-        
-        return 'OK', 200
+        sms = json.loads(unquote(request.args['message']))
+        print(f"SMS from {sms['from']}: {sms['message']}")
     
-    # Handle call events
-    if 'calls' in request.args:
-        call = json.loads(unquote(request.args.get('calls')))
-        
-        print(f"Call Type: {call['title']}")
-        print(f"Phone: {call['phone_number']}")
-        
-        # Process the call event
-        # Update CRM, log call, etc.
-        
-        return 'OK', 200
-    
-    # Handle link clicks
-    if 'clics' in request.args:
-        click = json.loads(unquote(request.args.get('clics')))
-        
-        print(f"Link clicked by: {click['phone_number']}")
-        print(f"Link: {click['link']}")
-        
-        # Track the click
-        # Update analytics, etc.
-        
-        return 'OK', 200
-    
-    # Handle delivery status
     if 'status' in request.args:
-        status = json.loads(unquote(request.args.get('status')))
-        
-        print(f"SMS Status: {status['status']}")
-        print(f"SMS ID: {status['id_sms_api']}")
-        
-        # Update delivery status
-        # Update database, etc.
-        
-        return 'OK', 200
+        dlr = json.loads(unquote(request.args['status']))
+        print(f"SMS {dlr['id_sms_api']} → {dlr['status']}")
     
-    # Handle call qualification
+    if 'clics' in request.args:
+        click = json.loads(unquote(request.args['clics']))
+        print(f"Click from {click['phone_number']} on {click['link']}")
+    
+    if 'calls' in request.args:
+        call = json.loads(unquote(request.args['calls']))
+        print(f"{call['title']} — {call['phone_number']}")
+    
     if 'qualification' in request.args:
-        qualification = json.loads(unquote(request.args.get('qualification')))
-        
-        print(f"Qualification: {qualification['qualification']}")
-        print(f"Source: {qualification['title']}")
-        
-        # Process qualification
-        # Update CRM, etc.
-        
-        return 'OK', 200
+        qual = json.loads(unquote(request.args['qualification']))
+        print(f"Qualification: {qual['qualification']}")
     
-    return 'No webhook data', 400
+    return 'OK', 200
 
 if __name__ == '__main__':
     app.run(port=3000)
 ```
 
-## 📝 Important Notes
+### PHP — Send SMS
 
-- All phone numbers must be in international format with the `+` prefix (e.g., `+33612345678` for France)
-- Date format for `date_to_send` is: `"YYYY-MM-DD HH:mm:ss"` (e.g., `"2025-10-29 10:16:10"`)
-- The `[Lien_Tracking]` field in the message will be replaced by the automatically generated tracking URL
-- Make sure your API access key is valid and active
-- In case of error, check the error codes returned in the response
+```php
+<?php
+$response = file_get_contents(
+    'https://www.insim.app/api/v1/sendsms',
+    false,
+    stream_context_create([
+        'http' => [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/json',
+            'content' => json_encode([
+                'header' => [
+                    'login' => 'user@email.com',
+                    'accessKey' => 'your-access-key'
+                ],
+                'messages' => [[
+                    'phone_number' => '+33612345678',
+                    'message' => 'Test from PHP'
+                ]]
+            ])
+        ]
+    ])
+);
+echo $response;
+```
 
-## 🔗 Links
+### PHP — Receive Webhooks
 
-- [Node.js Module Documentation](https://github.com/ArdaryinSIM/insim-api)
-- [InSim Website](https://ardary-insim.com/)
+```php
+<?php
+if (isset($_GET['message'])) {
+    $sms = json_decode($_GET['message'], true);
+    // Process incoming SMS
+}
+
+if (isset($_GET['status'])) {
+    $dlr = json_decode($_GET['status'], true);
+    // Update delivery status
+}
+
+if (isset($_GET['clics'])) {
+    $click = json_decode($_GET['clics'], true);
+    // Record the click
+}
+
+if (isset($_GET['calls'])) {
+    $call = json_decode($_GET['calls'], true);
+    // Log the call
+}
+
+if (isset($_GET['qualification'])) {
+    $qual = json_decode($_GET['qualification'], true);
+    // Sync with CRM
+}
+
+http_response_code(200);
+echo 'OK';
+```
+
+### Node.js (Express) — Receive Webhooks
+
+```javascript
+const express = require('express');
+const app = express();
+
+app.get('/webhook', (req, res) => {
+  if (req.query.message) {
+    const sms = JSON.parse(decodeURIComponent(req.query.message));
+    console.log(`SMS from ${sms.from}: ${sms.message}`);
+  }
+  
+  if (req.query.status) {
+    const dlr = JSON.parse(decodeURIComponent(req.query.status));
+    console.log(`SMS ${dlr.id_sms_api} → ${dlr.status}`);
+  }
+  
+  if (req.query.clics) {
+    const click = JSON.parse(decodeURIComponent(req.query.clics));
+    console.log(`Click: ${click.phone_number} → ${click.link}`);
+  }
+  
+  if (req.query.calls) {
+    const call = JSON.parse(decodeURIComponent(req.query.calls));
+    console.log(`${call.title}: ${call.phone_number}`);
+  }
+  
+  if (req.query.qualification) {
+    const qual = JSON.parse(decodeURIComponent(req.query.qualification));
+    console.log(`Qualification: ${qual.qualification}`);
+  }
+  
+  res.status(200).send('OK');
+});
+
+app.listen(3000);
+```
+
+---
+
+## 🏁 Getting Started
+
+### Prerequisites
+
+1. **Create an account** on [ardary-insim.com](https://www.ardary-insim.com)
+2. **Install the mobile app** from the [Play Store](https://play.google.com/store/apps/details?id=com.wstechnologies.ardarysolo) *(iOS coming soon)*
+3. **Connect your mobile** to inSIM via the app
+4. **Get your credentials** (login + accessKey) from your dashboard
+
+### First API Call
+
+```bash
+# Test your connection by sending an SMS to yourself
+curl -X POST https://www.insim.app/api/v1/sendsms \
+  -H "Content-Type: application/json" \
+  -d '{
+    "header": {
+      "login": "YOUR_EMAIL",
+      "accessKey": "YOUR_ACCESS_KEY"
+    },
+    "messages": [{
+      "phone_number": "YOUR_NUMBER",
+      "message": "inSIM API test ✅"
+    }]
+  }'
+```
+
+---
+
+## 📝 Technical Notes
+
+- **Phone number format**: Always use international format with `+` (e.g., `+33612345678`)
+- **Date format**: `"YYYY-MM-DD HH:mm:ss"` for `date_to_send`
+- **Tracked link**: Use `[Lien_Tracking]` in the message, it will be replaced by the short URL
+- **Webhooks**: Respond with a `200 OK` status quickly (< 5 seconds)
+- **HTTPS**: Always use HTTPS for your callback URLs
+
+---
+
+## 🔗 Links & Resources
+
+| Resource | Link |
+|----------|------|
+| 🌐 Official Website | [ardary-insim.com](https://www.ardary-insim.com) |
+| 💬 Web App | [insim.app](https://insim.app) |
+| 📱 Play Store | [Download](https://play.google.com/store/apps/details?id=com.wstechnologies.ardarysolo) |
+| 🍎 App Store | *Coming soon* |
+| 📦 Node.js SDK | [insim-node](https://github.com/ArdaryinSIM/insim-node) |
+| 📦 PHP SDK | [insim-php-composer](https://github.com/ArdaryinSIM/insim-php-composer) |
+
+---
+
+## 🆘 Support
+
+For any questions or assistance:
+- 📧 Contact us via [ardary-insim.com](https://www.ardary-insim.com)
+- 🏢 **Reach Technologies** — France
+
+---
 
 ## 📄 License
 
-MIT
-
-## 👤 Author
-
-ArdaryinSIM
-
+MIT © [Reach Technologies](https://www.ardary-insim.com)
