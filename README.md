@@ -1,6 +1,10 @@
-# InSim API - Direct HTTP Usage
+<p align="center">
+  <img src="api-insim1.png" alt="inSIM API - Connect your IT to mobile telephony" width="600">
+</p>
 
-Documentation for using the InSim API directly via HTTP requests without installing the Node.js module.
+# inSIM API - Direct HTTP Usage
+
+Documentation for using the inSIM API directly via HTTP requests without installing the Node.js module.
 
 ## 📡 Endpoints
 
